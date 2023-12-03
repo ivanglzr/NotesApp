@@ -4,28 +4,26 @@ import {
   getUser,
   postUser,
   putUser,
-  patchNote,
   deleteUser,
+} from "./controllers/user.controller.js";
+
+import {
   getNotes,
   postNotes,
-} from "./controllers/user.controller.js";
+  putNotes,
+} from "./controllers/note.controller.js";
 
 const app = express();
 app.disable("x-powered-by");
 app.use(express.json());
 
 app.get("/user/:id?", getUser);
-
 app.post("/user", postUser);
-
 app.put("/user/:id", putUser);
-
-app.patch("/user/:id", patchNote);
-
 app.delete("/user/:id", deleteUser);
 
 app.get("/user/:id/note/:noteId?", getNotes);
-
 app.post("/user/:id/note/", postNotes);
+app.put("/user/:id/note/:noteId", putNotes);
 
 export default app;
