@@ -41,7 +41,7 @@ export async function getUser(req, res) {
 }
 
 export async function postUser(req, res) {
-  const result = validateUser(req.body);
+  const result = validateUser(req.body.user);
 
   if (result.error) {
     return res.status(422).json({ message: JSON.parse(result.error.message) });
@@ -63,7 +63,7 @@ export async function postUser(req, res) {
 }
 
 export async function putUser(req, res) {
-  const result = validatePartialUser(req.body);
+  const result = validateUser(req.body.user);
 
   if (result.error) {
     return res.status(422).json({ message: JSON.parse(result.error.message) });

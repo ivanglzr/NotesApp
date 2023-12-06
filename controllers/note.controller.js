@@ -1,8 +1,8 @@
 import User from "../models/user.model.js";
 
-import { validateNotesArray } from "../schemas/user.schema.js";
+import { validateNote, validateNotesArray } from "../schemas/user.schema.js";
 
-export async function getNotes(req, res) {
+export async function getNote(req, res) {
   const { id, noteId } = req.params;
 
   if (id.length !== 24)
@@ -37,7 +37,7 @@ export async function getNotes(req, res) {
   }
 }
 
-export async function postNotes(req, res) {
+export async function postNote(req, res) {
   const { id } = req.params;
 
   if (id.length !== 24) {
@@ -47,6 +47,10 @@ export async function postNotes(req, res) {
   const { notes } = req.body;
 
   const result = validateNotesArray(notes);
+
+  if (result.error) {
+    return res.status(422).json({ message: JSON.parse(result.error.message) });
+  }
 
   try {
     const user = await User.findById(id);
@@ -61,7 +65,7 @@ export async function postNotes(req, res) {
       { new: true }
     );
 
-    return res.json({ message: "Notes added", user: userUpdated });
+    return res.json({ message: "Notes added" });
   } catch (_) {
     return res
       .status(500)
@@ -69,7 +73,7 @@ export async function postNotes(req, res) {
   }
 }
 
-export async function putNotes(req, res) {
+export async function putNote(req, res) {
   const { id, noteId } = req.params;
 
   if (id.length !== 24 || noteId.length !== 24) {
@@ -86,9 +90,19 @@ export async function putNotes(req, res) {
     if (noteIndex === -1)
       return res.status(404).json({ message: "Note not found" });
 
-    const {
-      note: { title, content, color },
-    } = req.body;
+    const result = validateNote(req.body.note);
+
+    if (result.error) {
+      return res
+        .status(422)
+        .json({ message: JSON.parse(result.error.message) });
+    }
+
+    const { title, content, color } = result.data;
+
+    if (title === undefined || content === undefined || color === undefined) {
+      return res.status(400).json({ message: "You must send all data" });
+    }
 
     const newNotes = user.notes;
 
@@ -102,10 +116,44 @@ export async function putNotes(req, res) {
       { new: true }
     );
 
-    return res.json({ user: userUpdated });
+    return res.json({ message: "Note updated" });
   } catch (_) {
     return res
       .status(500)
       .json({ message: "An error ocurred while updating the note" });
+  }
+}
+
+export async function deleteNote(req, res) {
+  const { id, noteId } = req.params;
+
+  if (id.length !== 24 || noteId.length !== 24)
+    return res.status(400).json({ message: "Id not valid" });
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const noteIndex = user.notes.findIndex((note) => note.id === noteId);
+
+    if (noteIndex === -1)
+      return res.status(404).json({ message: "Note not found" });
+
+    const newNotes = user.notes;
+
+    newNotes.splice(noteIndex, 1);
+
+    const userUpdated = await User.findOneAndUpdate(
+      { _id: id },
+      { notes: newNotes },
+      { new: true }
+    );
+
+    return res.json({ message: "Note deleted" });
+  } catch (_) {
+    return res
+      .status(500)
+      .json({ message: "An error ocurred while deleting the note" });
   }
 }

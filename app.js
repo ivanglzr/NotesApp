@@ -8,9 +8,10 @@ import {
 } from "./controllers/user.controller.js";
 
 import {
-  getNotes,
-  postNotes,
-  putNotes,
+  deleteNote,
+  getNote,
+  postNote,
+  putNote,
 } from "./controllers/note.controller.js";
 
 const app = express();
@@ -22,8 +23,9 @@ app.post("/user", postUser);
 app.put("/user/:id", putUser);
 app.delete("/user/:id", deleteUser);
 
-app.get("/user/:id/note/:noteId?", getNotes);
-app.post("/user/:id/note/", postNotes);
-app.put("/user/:id/note/:noteId", putNotes);
+app.get("/user/:id/note/:noteId?", getNote);
+app.post("/user/:id/note/", postNote);
+app.put("/user/:id/note/:noteId", putNote);
+app.delete("/user/:id/note/:noteId", deleteNote);
 
 export default app;
