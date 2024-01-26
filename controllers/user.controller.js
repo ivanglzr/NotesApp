@@ -13,30 +13,38 @@ export async function getUser(req, res) {
     try {
       const users = await User.find({});
 
-      return res.json({ users });
+      return res.json({ status: "success", users });
     } catch (_) {
       return res
         .status(500)
-        .json({ message: "An error happened while finding the users" });
+        .json({
+          status: "error",
+          message: "An error happened while finding the users",
+        });
     }
   }
 
   if (id.length !== 24) {
-    return res.status(400).json({ message: "Id not valid" });
+    return res.status(400).json({ status: "error", message: "Id not valid" });
   }
 
   try {
     const user = await User.findById(id);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res
+        .status(404)
+        .json({ status: "error", message: "User not found" });
     }
 
     return res.json({ user });
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "An error happened while finding the user" });
+      .json({
+        status: "error",
+        message: "An error happened while finding the user",
+      });
   }
 }
 
@@ -44,7 +52,9 @@ export async function postUser(req, res) {
   const result = validateUser(req.body.user);
 
   if (result.error) {
-    return res.status(422).json({ message: JSON.parse(result.error.message) });
+    return res
+      .status(422)
+      .json({ status: "error", message: JSON.parse(result.error.message) });
   }
 
   try {
@@ -54,11 +64,16 @@ export async function postUser(req, res) {
 
     res.setHeader("Content-Type", "application/json");
 
-    return res.status(201).json({ message: "User created", user: newUser });
+    return res
+      .status(201)
+      .json({ status: "success", message: "User created", user: newUser });
   } catch (_) {
     return res
       .status(500)
-      .json({ message: "An error happened while saving the user" });
+      .json({
+        status: "error",
+        message: "An error happened while saving the user",
+      });
   }
 }
 
@@ -66,13 +81,15 @@ export async function putUser(req, res) {
   const result = validateUser(req.body.user);
 
   if (result.error) {
-    return res.status(422).json({ message: JSON.parse(result.error.message) });
+    return res
+      .status(422)
+      .json({ status: "error", message: JSON.parse(result.error.message) });
   }
 
   const { id } = req.params;
 
   if (id.length !== 24) {
-    return res.status(400).json({ message: "Id not valid" });
+    return res.status(400).json({ status: "error", message: "Id not valid" });
   }
 
   try {
@@ -83,14 +100,19 @@ export async function putUser(req, res) {
     );
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res
+        .status(404)
+        .json({ status: "error", message: "User not found" });
     }
 
-    return res.json({ message: "User updated", user });
+    return res.json({ status: "success", message: "User updated", user });
   } catch (_) {
     return res
       .status(500)
-      .json({ message: "An error happened while updating the user" });
+      .json({
+        status: "error",
+        message: "An error happened while updating the user",
+      });
   }
 }
 
@@ -98,7 +120,7 @@ export async function deleteUser(req, res) {
   const { id } = req.params;
 
   if (id.length !== 24) {
-    return res.status(400).json({ message: "Id not valid" });
+    return res.status(400).json({ status: "error", message: "Id not valid" });
   }
 
   const { password } = req.body;
@@ -107,16 +129,23 @@ export async function deleteUser(req, res) {
     const user = await User.findById(id);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res
+        .status(404)
+        .json({ status: "error", message: "User not found" });
     }
 
     if (password !== user.password) {
-      return res.status(401).json({ message: "Invalid password" });
+      return res
+        .status(401)
+        .json({ status: "error", message: "Invalid password" });
     }
   } catch (_) {
     return res
       .status(500)
-      .json({ message: "An error happened while deleting the user" });
+      .json({
+        status: "error",
+        message: "An error happened while deleting the user",
+      });
   }
 
   try {
@@ -126,10 +155,13 @@ export async function deleteUser(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res.json({ message: "User deleted" });
+    return res.json({ status: "success", message: "User deleted" });
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "An error happened while deleting the user" });
+      .json({
+        status: "error",
+        message: "An error happened while deleting the user",
+      });
   }
 }
