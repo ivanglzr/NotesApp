@@ -5,6 +5,7 @@ import {
   postUser,
   putUser,
   deleteUser,
+  login,
 } from "./controllers/user.controller.js";
 
 import {
@@ -19,6 +20,7 @@ app.disable("x-powered-by");
 app.use(express.json());
 
 app.get("/user/:id?", getUser);
+app.get("/login", login);
 app.post("/user", postUser);
 app.put("/user/:id", putUser);
 app.delete("/user/:id", deleteUser);

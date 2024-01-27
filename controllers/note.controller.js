@@ -129,7 +129,7 @@ export async function putNote(req, res) {
     newNotes[noteIndex].content = content;
     newNotes[noteIndex].color = color;
 
-    const userUpdated = await User.findOneAndUpdate(
+    const notesUpdated = await User.findOneAndUpdate(
       { _id: id },
       { notes: newNotes },
       { new: true }
@@ -137,12 +137,10 @@ export async function putNote(req, res) {
 
     return res.json({ status: "success", message: "Note updated" });
   } catch (_) {
-    return res
-      .status(500)
-      .json({
-        status: "error",
-        message: "An error ocurred while updating the note",
-      });
+    return res.status(500).json({
+      status: "error",
+      message: "An error ocurred while updating the note",
+    });
   }
 }
 
@@ -179,11 +177,9 @@ export async function deleteNote(req, res) {
 
     return res.json({ status: "success", message: "Note deleted" });
   } catch (_) {
-    return res
-      .status(500)
-      .json({
-        status: "error",
-        message: "An error ocurred while deleting the note",
-      });
+    return res.status(500).json({
+      status: "error",
+      message: "An error ocurred while deleting the note",
+    });
   }
 }
