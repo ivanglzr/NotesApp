@@ -46,10 +46,10 @@ export async function login(req, res) {
   const user = await User.findOne({ email, password });
 
   if (!user) {
-    return res.status(404).json({ status: "error", message: "User not found" });
+    return res.status(404).json({ status: "error", message: "Login dennied" });
   }
 
-  return res.json({ status: "success", message: "Logged with exit" });
+  return res.json({ status: "success", user, message: "Logged with exit" });
 }
 
 export async function postUser(req, res) {
