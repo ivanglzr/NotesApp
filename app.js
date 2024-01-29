@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 
 import {
   getUser,
@@ -18,9 +19,10 @@ import {
 const app = express();
 app.disable("x-powered-by");
 app.use(express.json());
+app.use(cors());
 
 app.get("/user/:id?", getUser);
-app.get("/login", login);
+app.get("/login/:email/:password", login);
 app.post("/user", postUser);
 app.put("/user/:id", putUser);
 app.delete("/user/:id", deleteUser);

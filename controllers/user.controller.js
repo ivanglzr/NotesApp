@@ -41,7 +41,7 @@ export async function getUser(req, res) {
 }
 
 export async function login(req, res) {
-  const { email, password } = req.body;
+  const { email, password } = req.params;
 
   const user = await User.findOne({ email, password });
 
