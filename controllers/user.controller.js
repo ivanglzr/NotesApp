@@ -62,6 +62,16 @@ export async function postUser(req, res) {
   }
 
   try {
+    const email = result.data.email;
+
+    const userInDb = await User.find({ email });
+
+    if (userInDb.length > 0) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "User already exists in DB" });
+    }
+
     const user = new User({ ...result.data });
 
     const newUser = await user.save();
